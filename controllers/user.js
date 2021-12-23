@@ -1,17 +1,22 @@
 const { response, request } = require("express");
 const bcrypt = require("bcrypt");
 
-
 const User = require("../models/user");
 
-const usuariosGet = (req = request, res = response) => {
-  const { q, page = 1, limit = 10 } = req.query;
+const usuariosGet = async (req = request, res = response) => {
+  const { limit = 5, from = 0 } = req.query;
+  const query = { status: true };
+
+  // Ejecutar a la vez las promesas
+  const [total, users] = await Promise.all([
+    User.countDocuments(query),
+    User.find(query).skip(Number(from)).limit(Number(limit)),
+  ]);
 
   res.json({
     message: "Get - controlador",
-    q,
-    page,
-    limit,
+    total,
+    users,
   });
 };
 
@@ -31,12 +36,22 @@ const usuariosPost = async (req = request, res = response) => {
   });
 };
 
-const usuariosPut = (req = request, res = response) => {
+const usuariosPut = async (req = request, res = response) => {
   const { id } = req.params;
+  const { _id, password, google, correo, ...rest } = req.body;
+
+  // Valdiar contra base de datos
+  if (password) {
+    // Encriptar contraseña
+    const salt = bcrypt.genSaltSync();
+    rest.password = bcrypt.hashSync(password, salt);
+  }
+
+  const user = await User.findByIdAndUpdate(id, rest);
 
   res.json({
     message: "Put - controlador",
-    id,
+    user,
   });
 };
 

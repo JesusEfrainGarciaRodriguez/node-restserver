@@ -1,7 +1,11 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 
-const { isRoleValid, existsEmail } = require("../helpers/db-validators");
+const {
+  isRoleValid,
+  existsEmail,
+  existsUserById,
+} = require("../helpers/db-validators");
 const { validateFields } = require("../middlewares/validate-fields");
 
 const {
@@ -27,12 +31,23 @@ router.post(
     }),
     /* check("role", "No es un rol válido").isIn(["ADMIN_ROLE", "USER_ROLE"]), */
     check("role").custom(isRoleValid),
+    // Mostrar errores
     validateFields,
   ],
   usuariosPost
 );
 
-router.put("/:id", usuariosPut);
+router.put(
+  "/:id",
+  [
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(existsUserById),
+    check("role").custom(isRoleValid),
+    // Mostrar errores
+    validateFields,
+  ],
+  usuariosPut
+);
 
 router.patch("/", usuariosPatch);
 
