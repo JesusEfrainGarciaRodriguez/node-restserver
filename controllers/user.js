@@ -16,7 +16,7 @@ const usuariosGet = async (req = request, res = response) => {
   res.json({
     message: "Get - controlador",
     total,
-    users,
+    data: users,
   });
 };
 
@@ -32,7 +32,8 @@ const usuariosPost = async (req = request, res = response) => {
   await user.save();
 
   res.status(201).json({
-    body: user,
+    message: "User added successfully",
+    data: user,
   });
 };
 
@@ -50,8 +51,8 @@ const usuariosPut = async (req = request, res = response) => {
   const user = await User.findByIdAndUpdate(id, rest);
 
   res.json({
-    message: "Put - controlador",
-    user,
+    message: "User updated successfully",
+    data: user,
   });
 };
 
@@ -61,9 +62,18 @@ const usuariosPatch = (req, res = response) => {
   });
 };
 
-const usuariosDelete = (req, res = response) => {
+const usuariosDelete = async (req = request, res = response) => {
+  const { id } = req.params;
+
+  // Borrado fisico
+  /* const usuario = await User.findByIdAndDelete(id); */
+
+  // Borrado logico
+  const user = await User.findByIdAndUpdate(id, { status: false });
+
   res.json({
-    message: "Delete - controlador",
+    message: "User deleted successfully",
+    data: user,
   });
 };
 
