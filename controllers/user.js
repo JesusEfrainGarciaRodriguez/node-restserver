@@ -66,7 +66,7 @@ const usuariosDelete = async (req = request, res = response) => {
   const { id } = req.params;
 
   // Borrado fisico
-  /* const usuario = await User.findByIdAndDelete(id); */
+  // const usuario = await User.findByIdAndDelete(id);
 
   // Borrado logico
   const user = await User.findByIdAndUpdate(id, { status: false });
