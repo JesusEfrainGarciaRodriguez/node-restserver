@@ -65,15 +65,16 @@ const usuariosPatch = (req, res = response) => {
 const usuariosDelete = async (req = request, res = response) => {
   const { id } = req.params;
 
-  // Borrado fisico
-  // const usuario = await User.findByIdAndDelete(id);
-
   // Borrado logico
   const user = await User.findByIdAndUpdate(id, { status: false });
+
+  // Obtener usuario autenticado de la request
+  const userAuth = req.userAuth;
 
   res.json({
     message: "User deleted successfully",
     data: user,
+    userAuth,
   });
 };
 
