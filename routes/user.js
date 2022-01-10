@@ -6,9 +6,8 @@ const {
   existsEmail,
   existsUserById,
 } = require("../helpers/db-validators");
-const { validateFields } = require("../middlewares/validate-fields");
-const { validateJWT } = require("../middlewares/validate-jwt");
-const { isAdmineRole, isRole } = require("../middlewares/validate-roles");
+
+const { validateFields, validateJWT, isRole, isAdmineRole} = require("../middlewares")
 
 const {
   usuariosGet,
